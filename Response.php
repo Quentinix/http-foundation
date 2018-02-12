@@ -92,7 +92,7 @@ class Response
     protected $content;
     
     /**
-     * @var boolean
+     * @var bool
      */
     protected $contentTypeFile;
 
@@ -195,12 +195,12 @@ class Response
     /**
      * @throws \InvalidArgumentException When the HTTP status code is not valid
      */
-    public function __construct($content = '', $contentTypeFile = true, int $status = 200, array $headers = array())
+    public function __construct($content = '', int $status = 200, array $headers = array(), $contentTypeFile = false)
     {
         $this->headers = new ResponseHeaderBag($headers);
         $this->setContent($content);
-        $this->setContentTypeFile($contentTypeFile);
         $this->setStatusCode($status);
+        $this->setContentTypeFile($contentTypeFile);
         $this->setProtocolVersion('1.0');
     }
 
@@ -236,7 +236,8 @@ class Response
      */
     public function __toString()
     {
-        if ($this->contentTypeFile == true) {
+        $return = "";
+        if ($this->contentTypeFile === true) {
             $return = sprintf('HTTP/%s %s %s', $this->version, $this->statusCode, $this->statusText)."\r\n".
             $this->headers."\r\n";
         }
@@ -407,9 +408,14 @@ class Response
     
     public function setContentTypeFile($contentTypeFile)
     {
-        $this->contentTypeFile = (string) $contentTypeFile;
+        $this->contentTypeFile = $contentTypeFile;
     }
 
+    public function getContentTypeFile()
+    {
+        return $this->contentTypeFile;
+    }
+    
     /**
      * Gets the current response content.
      *
